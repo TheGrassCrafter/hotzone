@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HOTZONE – Play with Friends</title>
+<style>
+:root{color-scheme:dark;--bg:#07110d;--panel:#101f18;--line:#254534;--green:#58f59a;--muted:#a7c2b1;--red:#ff7272}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#153624 0,#07110d 60%);font-family:system-ui,Arial,sans-serif;color:#f1fff6;min-height:100vh;padding:20px}
+main{max-width:760px;margin:0 auto}.logo{text-align:center;font-size:clamp(38px,9vw,64px);font-weight:1000;letter-spacing:5px;color:var(--green);text-shadow:0 0 24px #38d87955;margin:12px 0 2px}.sub{text-align:center;color:var(--muted);margin-bottom:24px;letter-spacing:2px;font-size:12px}
+.card{background:#0e1c15ed;border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 10px 32px #0003}.hidden{display:none!important}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}button,input{font:inherit}button{background:var(--green);color:#062010;border:0;border-radius:12px;padding:13px 16px;font-weight:850;cursor:pointer;width:100%}button.secondary{background:#1b3326;color:#eafff0;border:1px solid #345941}button.danger{background:#451e22;color:#ffe4e4;border:1px solid #7b363c}button:disabled{opacity:.5;cursor:not-allowed}input{width:100%;background:#07110d;border:1px solid #355443;border-radius:10px;padding:12px;color:white;margin:5px 0 12px}label{display:block;color:var(--muted);font-size:13px;margin-top:8px}h2,h3{margin:0 0 12px}p{color:var(--muted);line-height:1.45}.roomcode{font-size:30px;font-weight:900;letter-spacing:6px;color:var(--green);text-align:center;padding:12px}.players{display:flex;flex-wrap:wrap;gap:8px}.player{border:1px solid #315740;background:#13291d;border-radius:99px;padding:8px 12px}.small{font-size:12px;color:var(--muted)}.status{padding:10px;border-radius:10px;background:#12291c;color:#baf9d0;margin:10px 0}.status.error{background:#351b1d;color:#ffc4c4}.row{display:flex;gap:10px;align-items:center}.row>*{flex:1}input[type=range]{padding:0;accent-color:var(--green)}.scale{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}.big{font-size:25px;font-weight:850}.pill{display:inline-block;background:#1b3326;border:1px solid #315740;padding:5px 9px;border-radius:99px;font-size:12px;color:#c8ffda}
+</style>
+</head>
+<body><main>
+<div class="logo">HOTZONE</div><div class="sub">PLAY WITH FRIENDS · 1–10</div>
+<div id="notice" class="status hidden"></div>
+<section id="home" class="card">
+<h2>Willkommen in HOTZONE</h2><p>Erstelle einen Raum oder tritt mit einem Raumcode bei. Spielernamen werden nicht abgefragt; die Mitspieler werden nur als Spieler 1, Spieler 2 usw. angezeigt.</p>
+<div class="grid"><button id="createBtn">＋ Runde erstellen</button><div><label for="joinCode">Raumcode</label><input id="joinCode" maxlength="6" placeholder="z. B. A7K2QF" autocapitalize="characters"><button id="joinBtn" class="secondary">↗ Runde beitreten</button></div></div>
+</section>
+<section id="room" class="hidden">
+<div class="card"><div class="row"><div><div class="small">DEIN RAUMCODE</div><div id="roomCode" class="roomcode">------</div></div><button id="copyBtn" class="secondary">Code kopieren</button></div><div id="roleText" class="pill">Spieler</div><h3 style="margin-top:15px">Spieler im Raum</h3><div id="players" class="players"></div><div id="roomStatus" class="status">Warte auf Spieler …</div></div>
+<div id="hostPanel" class="card hidden"><h2>Chef-Einstellungen</h2><p>Nur der Ersteller kann die Runde und die Kategorie einstellen.</p>
+<label for="leftCategory">Linke Seite (1)</label><input id="leftCategory" maxlength="60" value="Schlechtes Game">
+<label for="rightCategory">Rechte Seite (10)</label><input id="rightCategory" maxlength="60" value="Gutes Game">
+<label for="secretNumber">Geheime Zahl: <strong id="secretOut">5</strong></label><input id="secretNumber" type="range" min="1" max="10" value="5">
+<button id="saveSettings" class="secondary">Einstellungen speichern</button>
+</div>
+<div class="card"><h2>Aktuelle Runde</h2><div class="small">KATEGORIEN</div><div class="row"><div class="big" id="leftOut">Schlechtes Game</div><div class="big" id="rightOut">Gutes Game</div></div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+<div id="clueArea" class="hidden"><label for="clueInput">Dein Beispiel / Hinweis</label><input id="clueInput" maxlength="100" placeholder="z. B. Minecraft"><button id="submitClue">Hinweis senden</button></div>
+<div id="clueView" class="hidden"><p>Hinweis:</p><div class="big" id="clueOut"></div></div>
+<div id="guessArea" class="hidden"><label for="guessRange">Welche Zahl wurde gewählt? <strong id="guessOut">5</strong></label><input id="guessRange" type="range" min="1" max="10" value="5"><button id="submitGuess">Tipp abgeben</button></div>
+<div id="resultArea" class="hidden"><div class="status" id="resultText"></div></div>
+</div>
+<div class="card"><h3>Punkte</h3><div id="scores" class="players"></div><p class="small">Punkte: genau richtig = 3, Abstand 1 = 2, Abstand 2 = 1, sonst 0.</p></div>
+<div class="grid"><button id="refreshBtn" class="secondary">Aktualisieren</button><button id="leaveBtn" class="danger">Raum verlassen</button></div>
+</section>
+<p class="small" style="text-align:center">HOTZONE · Keine Konten · Keine Spielernamen · Raumdaten werden automatisch nach 3 Stunden Inaktivität verworfen.</p>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let roomCode=null, playerId=null, isHost=false, hostToken=null, roomData=null, poller=null;
+const tokenKey=()=>`hz-host-${roomCode}`;
+function msg(t,err=false){$('notice').textContent=t;$('notice').classList.remove('hidden','error');if(err)$('notice').classList.add('error');}
+function clearMsg(){$('notice').classList.add('hidden')}
+async function api(action,data={}){const r=await fetch('/.netlify/functions/hotzone',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,roomCode,playerId,hostToken,...data})});let j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||'Etwas ist schiefgelaufen.');return j;}
+function showRoom(){ $('home').classList.add('hidden');$('room').classList.remove('hidden');$('roomCode').textContent=roomCode;$('hostPanel').classList.toggle('hidden',!isHost);$('roleText').textContent=isHost?'CHEF · Du kontrollierst die Einstellungen':'SPIELER';}
+async function createRoom(){try{const j=await api('create');roomCode=j.roomCode;playerId=j.playerId;hostToken=j.hostToken;isHost=true;sessionStorage.setItem(tokenKey(),hostToken);showRoom();await refresh();startPoll();msg('Raum erstellt! Schicke Max den Code und den Website-Link.');}catch(e){msg(e.message,true)}}
+async function joinRoom(){const code=$('joinCode').value.trim().toUpperCase();if(!/^[A-Z0-9]{6}$/.test(code)){msg('Gib einen 6-stelligen Raumcode ein.',true);return}roomCode=code;try{const j=await api('join');playerId=j.playerId;isHost=false;hostToken=null;showRoom();await refresh();startPoll();clearMsg();}catch(e){roomCode=null;msg(e.message,true)}}
+async function refresh(){if(!roomCode)return;try{const j=await api('state');roomData=j.room;$('roomCode').textContent=roomCode;$('players').innerHTML='';roomData.players.forEach((p,i)=>{const el=document.createElement('span');el.className='player';el.textContent=(p.id===playerId?'Du · ':'')+`Spieler ${i+1}`+(p.id===roomData.hostPlayerId?' ★':'');$('players').appendChild(el)});$('roomStatus').textContent=roomData.players.length<2?'Warte auf Mitspieler …':'Ihr seid verbunden!';$('leftOut').textContent=roomData.leftCategory;$('rightOut').textContent=roomData.rightCategory;if(isHost){$('leftCategory').value=roomData.leftCategory;$('rightCategory').value=roomData.rightCategory;$('secretNumber').value=roomData.secretNumber;$('secretOut').textContent=roomData.secretNumber}
+$('clueArea').classList.toggle('hidden',!roomData.roundStarted||roomData.cluePlayerId!==playerId||!!roomData.clue);$('clueView').classList.toggle('hidden',!roomData.clue);$('clueOut').textContent=roomData.clue||'';$('guessArea').classList.toggle('hidden',!roomData.clue||roomData.guesses?.some(g=>g.playerId===playerId)||roomData.cluePlayerId===playerId);$('resultArea').classList.toggle('hidden',!roomData.revealed);if(roomData.revealed)$('resultText').textContent=`Die geheime Zahl war ${roomData.secretNumber}.`; $('scores').innerHTML='';roomData.players.forEach((p,i)=>{let el=document.createElement('span');el.className='player';el.textContent=`Spieler ${i+1}: ${roomData.scores[p.id]||0} Punkte`;$('scores').appendChild(el)});if(roomData.clue&&roomData.guesses?.length){const last=roomData.guesses[roomData.guesses.length-1];if(last.playerId===playerId)$('resultText').textContent=`Dein Tipp: ${last.guess}. Punkte: ${last.points}.`;if(roomData.guesses.length>=Math.max(1,roomData.players.length-1))$('resultArea').classList.remove('hidden');}
+}catch(e){msg(e.message,true)}}
+function startPoll(){if(poller)clearInterval(poller);poller=setInterval(refresh,2200)}
+$('createBtn').onclick=createRoom;$('joinBtn').onclick=joinRoom;$('secretNumber').oninput=()=>$('secretOut').textContent=$('secretNumber').value;$('guessRange').oninput=()=>$('guessOut').textContent=$('guessRange').value;
+$('saveSettings').onclick=async()=>{try{await api('settings',{leftCategory:$('leftCategory').value,rightCategory:$('rightCategory').value,secretNumber:+$('secretNumber').value});await api('startRound');await refresh();msg('Einstellungen gespeichert.');}catch(e){msg(e.message,true)}};
+$('submitClue').onclick=async()=>{const clue=$('clueInput').value.trim();if(!clue)return;try{await api('clue',{clue});$('clueInput').value='';await refresh()}catch(e){msg(e.message,true)}};
+$('submitGuess').onclick=async()=>{try{await api('guess',{guess:+$('guessRange').value});await refresh()}catch(e){msg(e.message,true)}};
+$('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(roomCode);msg('Raumcode kopiert!')}catch(e){msg('Dein Raumcode ist '+roomCode)}};
+$('refreshBtn').onclick=refresh;$('leaveBtn').onclick=()=>{if(poller)clearInterval(poller);roomCode=null;playerId=null;isHost=false;hostToken=null;roomData=null;$('room').classList.add('hidden');$('home').classList.remove('hidden');clearMsg()};
+</script></body></html>
