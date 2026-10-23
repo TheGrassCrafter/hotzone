@@ -74,5 +74,7 @@ export default async (req) => {
    await saveRoom(code,room);return ok({room:publicRoom(room,host)});
   }
   return fail(400,"Unbekannte Aktion.");
- }catch(e){return fail(500,"Online-Fehler. Prüfe, ob die Netlify-Funktion veröffentlicht wurde.")}
-};
+}catch(e){
+ console.error("HOTZONE function error:", e);
+ return fail(500,"HOTZONE-Fehler. Bitte Function Logs prüfen.");
+}
